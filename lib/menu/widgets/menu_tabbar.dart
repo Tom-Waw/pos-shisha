@@ -18,20 +18,20 @@ class MenuTabBar extends StatelessWidget {
                     border: Border(
                       bottom: BorderSide(
                           width: 1.5,
-                          color: context.watch<MenuProvider>().isActive(menu)
+                          color: menu.isActive
                               ? Colors.white
                               : Colors.transparent),
                     ),
                   ),
                   child: InkWell(
-                    onTap: () => context.read<MenuProvider>().changeMenu(menu),
+                    onTap: () => context.read<MenuProvider>().openMenu(menu),
                     child: Ink(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Column(children: [
                         Icon(menu.icon, color: Colors.white),
                         const SizedBox(height: 6.0),
                         Text(
-                          menu.title,
+                          menu.name,
                           style: const TextStyle(color: Colors.white),
                         )
                       ]),

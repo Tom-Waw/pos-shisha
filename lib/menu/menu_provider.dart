@@ -1,44 +1,70 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide MenuItem;
 
 import 'package:pos_shisha_bar/helpers/logger.dart';
-import 'package:pos_shisha_bar/helpers/utils.dart';
 
 import './data.dart';
 
+List<Menu> getMenus() {
+  return [
+    Menu(name: "Getränke", icon: Icons.local_drink, items: [
+      ExpandableMenuItem(
+        name: "Alkoholische Getränke",
+        items: [MenuItem(name: "Gin Tonic")],
+      )
+    ]),
+    Menu(name: "Essen", icon: Icons.food_bank, items: [
+      ExpandableMenuItem(
+        name: "Nachspeisen",
+        items: [MenuItem(name: "Schwarzwälder Kirschkuchen")],
+      )
+    ]),
+    Menu(name: "Verschiedenes", icon: Icons.star, items: [
+      ExpandableMenuItem(
+        name: "Shishas",
+        items: [MenuItem(name: "Apfel Minze")],
+      )
+    ]),
+  ];
+}
+
 class MenuProvider with ChangeNotifier {
   final log = getLogger();
-  late final List<OBMenu> _menus;
-  late int _activeIdx;
-  late List<int> _openCategories;
+  late final List<Menu> _menus;
 
   MenuProvider() {
-    _menus = Utils.getMenus();
-    _activeIdx = 0;
-    _openCategories = _menus.map((_) => -1).toList();
+    _menus = getMenus();
+    if (isHealthy) _menus[0].isActive = true;
   }
 
-  List<OBMenu> get menus => _menus;
   bool get isHealthy => _menus.isNotEmpty;
-  bool get isCurrentOpen => !(_openCategories[_activeIdx] < 0);
-  List<OBMenuItem> get current => isCurrentOpen
-      ? _menus[_activeIdx].categories[_openCategories[_activeIdx]].items
-      : _menus[_activeIdx].categories;
+  List<MenuInformation> get menus => _menus;
+  Menu get current => _menus.firstWhere((menu) => menu.isActive);
+  List<MenuItem> get display =>
+      _getDisplay(current.items)?.items ?? current.items;
 
-  bool isActive(OBMenu menu) => _activeIdx == _menus.indexOf(menu);
-
-  void openCategory(OBMenuCategory category) {
-    _openCategories[_activeIdx] =
-        _menus[_activeIdx].categories.indexOf(category);
+  void openMenu(MenuInformation menu) {
+    current.isActive = false;
+    menu.isActive = true;
     notifyListeners();
   }
 
-  void closeCategory() {
-    _openCategories[_activeIdx] = -1;
+  ExpandableMenuItem? _getDisplay(List<MenuItem> items) {
+    int idx = items
+        .indexWhere((item) => item is ExpandableMenuItem && item.isExpanded);
+
+    return idx != -1
+        ? _getDisplay((items[idx] as ExpandableMenuItem).items) ??
+            items[idx] as ExpandableMenuItem
+        : null;
+  }
+
+  void expandItem(ExpandableMenuItem item) {
+    item.isExpanded = true;
     notifyListeners();
   }
 
-  void changeMenu(OBMenu menu) {
-    _activeIdx = _menus.indexOf(menu);
+  void collapseItem() {
+    _getDisplay(current.items)?.isExpanded = false;
     notifyListeners();
   }
 }

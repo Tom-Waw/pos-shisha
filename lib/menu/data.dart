@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
 
-class OBMenu {
-  String title;
+class MenuInformation {
+  String name;
   IconData icon;
-  List<OBMenuCategory> categories;
+  bool isActive = false;
 
-  OBMenu({required this.title, required this.icon, required this.categories});
+  MenuInformation({required this.name, required this.icon});
 }
 
-class OBMenuItem {
-  String id;
+class Menu extends MenuInformation {
+  List<MenuItem> items;
+
+  Menu({required name, required icon, required this.items})
+      : super(name: name, icon: icon);
+}
+
+class MenuItem {
   String name;
 
-  OBMenuItem({required this.id, required this.name});
+  MenuItem({required this.name});
 }
 
-class OBMenuCategory extends OBMenuItem {
-  List<OBMenuItem> items;
+class ExpandableMenuItem extends MenuItem {
+  List<MenuItem> items;
+  bool isExpanded = false;
 
-  OBMenuCategory({required id, required name, required this.items})
-      : super(id: id, name: name);
+  ExpandableMenuItem({required name, required this.items}) : super(name: name);
 }

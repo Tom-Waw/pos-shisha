@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../data.dart';
+import '../data.dart' as menu;
 import '../menu_provider.dart';
 
 import './menu_item_box.dart';
@@ -11,7 +11,8 @@ class MenuView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<OBMenuItem> items = context.watch<MenuProvider>().current;
+    menu.Menu current = context.watch<MenuProvider>().current;
+    List<menu.MenuItem> display = context.watch<MenuProvider>().display;
 
     return GridView.count(
         padding: const EdgeInsets.all(8.0),
@@ -19,22 +20,20 @@ class MenuView extends StatelessWidget {
         crossAxisSpacing: 8.0,
         mainAxisSpacing: 8.0,
         children: [
-          if (context.read<MenuProvider>().isCurrentOpen)
+          if (display != current.items)
             InkWell(
-              onTap: () => context.read<MenuProvider>().closeCategory(),
+              onTap: () => context.read<MenuProvider>().collapseItem(),
               child: Ink(
                 color: Colors.grey[300],
                 child: const Center(child: Icon(Icons.arrow_back)),
               ),
             ),
-          ...items
-              .map((category) => GestureDetector(
-                    onTap: () => context.read<MenuProvider>().isCurrentOpen
-                        ? null
-                        : context
-                            .read<MenuProvider>()
-                            .openCategory(category as OBMenuCategory),
-                    child: MenuItemBox(item: category),
+          ...display
+              .map((item) => GestureDetector(
+                    onTap: () => item is menu.ExpandableMenuItem
+                        ? context.read<MenuProvider>().expandItem(item)
+                        : null,
+                    child: MenuItemBox(item: item),
                   ))
               .toList(),
           InkWell(
