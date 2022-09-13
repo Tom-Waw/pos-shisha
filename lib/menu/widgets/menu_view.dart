@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pos_shisha_bar/menu/data.dart';
-import 'package:pos_shisha_bar/menu/menu_item_box.dart';
-import 'package:pos_shisha_bar/menu/menu_provider.dart';
 import 'package:provider/provider.dart';
+
+import '../data.dart';
+import '../menu_provider.dart';
+
+import './menu_item_box.dart';
 
 class MenuView extends StatelessWidget {
   const MenuView({Key? key}) : super(key: key);

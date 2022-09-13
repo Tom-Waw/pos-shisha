@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pos_shisha_bar/menu/menu_provider.dart';
-import 'package:pos_shisha_bar/menu/menu_tabbar.dart';
 import 'package:provider/provider.dart';
 
-import 'menu_view.dart';
+import '../menu_provider.dart';
+
+import '../widgets/menu_view.dart';
+import '../widgets/menu_tabbar.dart';
 
 class MenuPage extends StatelessWidget {
   const MenuPage({Key? key}) : super(key: key);

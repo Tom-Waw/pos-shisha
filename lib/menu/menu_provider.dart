@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:pos_shisha_bar/helpers/logger.dart';
 import 'package:pos_shisha_bar/helpers/utils.dart';
-import 'package:pos_shisha_bar/menu/data.dart';
+
+import './data.dart';
 
 class MenuProvider with ChangeNotifier {
   final log = getLogger();

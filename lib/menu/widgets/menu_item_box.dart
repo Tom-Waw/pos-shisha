@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pos_shisha_bar/menu/data.dart';
+
+import '../data.dart';
 
 class MenuItemBox extends StatelessWidget {
   final OBMenuItem item;
