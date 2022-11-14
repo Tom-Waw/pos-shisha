@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../data.dart' as menu;
+import '../data.dart';
 
 class MenuItemBox extends StatelessWidget {
-  final menu.MenuItem item;
+  final MenuElement item;
 
   const MenuItemBox({Key? key, required this.item}) : super(key: key);
 

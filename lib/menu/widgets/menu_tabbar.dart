@@ -1,30 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../menu_provider.dart';
+import '../data.dart';
 
 class MenuTabBar extends StatelessWidget {
-  const MenuTabBar({Key? key}) : super(key: key);
+  final List<Menu> menus;
+  final Menu current;
+  final void Function(Menu) selectMenu;
+
+  const MenuTabBar(
+      {Key? key,
+      required this.menus,
+      required this.current,
+      required this.selectMenu})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: context
-          .watch<MenuProvider>()
-          .menus
+      children: menus
           .map((menu) => Expanded(
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border(
                       bottom: BorderSide(
-                          width: 1.5,
-                          color: menu.isActive
-                              ? Colors.white
-                              : Colors.transparent),
+                        width: 1.5,
+                        color:
+                            menu == current ? Colors.white : Colors.transparent,
+                      ),
                     ),
                   ),
                   child: InkWell(
-                    onTap: () => context.read<MenuProvider>().openMenu(menu),
+                    onTap: () => selectMenu(menu),
                     child: Ink(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Column(children: [

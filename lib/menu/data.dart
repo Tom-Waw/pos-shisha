@@ -1,29 +1,20 @@
 import 'package:flutter/material.dart';
 
-class MenuInformation {
-  String name;
-  IconData icon;
-  bool isActive = false;
+class Menu extends SubMenu {
+  final IconData icon;
+  List<int> activationStack = [];
 
-  MenuInformation({required this.name, required this.icon});
+  Menu({required super.name, required this.icon, required super.items});
 }
 
-class Menu extends MenuInformation {
-  List<MenuItem> items;
+class SubMenu extends MenuElement {
+  List<MenuElement> items;
 
-  Menu({required name, required icon, required this.items})
-      : super(name: name, icon: icon);
+  SubMenu({required super.name, required this.items});
 }
 
-class MenuItem {
-  String name;
+class MenuElement {
+  final String name;
 
-  MenuItem({required this.name});
-}
-
-class ExpandableMenuItem extends MenuItem {
-  List<MenuItem> items;
-  bool isExpanded = false;
-
-  ExpandableMenuItem({required name, required this.items}) : super(name: name);
+  const MenuElement({required this.name});
 }
