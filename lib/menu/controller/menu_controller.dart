@@ -1,5 +1,4 @@
-import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:get/state_manager.dart';
+import 'package:get/get.dart';
 import 'package:pos_shisha_bar/helpers/utils.dart';
 
 import '../data.dart';
@@ -8,7 +7,9 @@ class MenuController extends GetxController {
   late final Rx<Menu> _drinks;
   late final Rx<Menu> _food;
   late final Rx<Menu> _other;
-  var _activeMenu = 0.obs;
+  final _activeMenu = 0.obs;
+
+  Rx<SubMenu?> _tempMenu = null.obs;
 
   MenuController() {
     List<Menu> menus = Utils.loadMenus();
@@ -20,20 +21,46 @@ class MenuController extends GetxController {
   List<Rx<Menu>> get menus => [_drinks, _food, _other];
   Rx<Menu> get current => menus[_activeMenu.value];
 
-  List<MenuElement> get display => current.value.activationStack.fold(
-      current.value.items, (prev, element) => (prev[element] as SubMenu).items);
+  SubMenu get display =>
+      _tempMenu.value ??
+      current.value.activationStack.fold<SubMenu>(
+        current.value,
+        (prev, element) => (prev.items[element] as SubMenu),
+      );
 
   void selectMenu(Rx<Menu> menu) {
-    _activeMenu = menus.indexOf(menu).obs;
+    _activeMenu(menus.indexOf(menu));
   }
 
   bool get isRoot => current.value.activationStack.isEmpty;
 
-  void back() {
-    current.value.activationStack.removeLast();
-  }
+  void back() => current.update(
+        (Menu? menu) {
+          menu?.activationStack.removeLast();
+        },
+      );
 
-  void enter(SubMenu item) {
-    current.value.activationStack.add(current.value.items.indexOf(item));
-  }
+  void enter(SubMenu item) => current.update(
+        (Menu? menu) {
+          if (menu == null) return;
+          menu.activationStack.add(menu.items.indexOf(item));
+        },
+      );
+
+  void addItem(MenuElement item) => current.update(
+        (SubMenu? menu) {
+          display.items.add(item);
+        },
+      );
+
+  void removeItem(MenuElement item) => current.update(
+        (SubMenu? menu) {
+          display.items.remove(item);
+        },
+      );
+
+  // void enterTempCreate(MenuElement item) {
+  //   _tempMenu = SubMenu(name: item.name, items: []).obs;
+
+  // }
 }
